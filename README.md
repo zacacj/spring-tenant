@@ -81,3 +81,4 @@ By default this component is already configured.
 ### Next features
 
 * Define a automatic way to provide tenant in the context for web applications
+* Support more database (e.g. MySQL, SQLServer, DB2, Sybase, Firebird, etc)
