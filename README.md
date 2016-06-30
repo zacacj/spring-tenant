@@ -78,3 +78,6 @@ By default this component is already configured.
   // all database operations are run in your tenant session also prepared by component TenantConnectionPrepareAspect.
 ```
 
+### Next features
+
+* Define a automatic way to provide tenant in the context for web applications
