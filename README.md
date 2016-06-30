@@ -75,6 +75,6 @@ By default this component is already configured.
   Tenant tenant = getTenant();// get tenant from request (e.g. Header) or database (e.g. TenantDiscoverer)
   TenantContextHolder.set(tenant);
   // run some code to access your database...
-  // all data operations are run in your tenant session also prepared by component __TenantConnectionPrepareAspect__.
+  // all data operations are run in your tenant session also prepared by component TenantConnectionPrepareAspect.
 ```
 
