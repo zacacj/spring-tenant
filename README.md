@@ -24,10 +24,6 @@ Define a prefix for your tenants and add in your spring application.properties:
 tenant.prefix=my_prefix
 ```
 
-### Spring JDBC Template
-
-This project has dependency to spring-jdbc, and the bean jdbcTemplate needs to be provided by your spring application.
-
 ### Postgresql
 
 Supported without any special configuration.
@@ -39,6 +35,22 @@ It's necessary to define the default tenant in your spring application.propertie
 tenant.default=some_user
 ```
 
+### Spring Configuration
+
+This project has dependency to spring-jdbc, and the beans dataSource and jdbcTemplate needs to be provided by your spring application.
+
+```Java
+@Configuration
+@Import(TenantConfig.class) // import tenant configuration
+public class YourAppConfig {
+
+  @Bean
+  public JdbcTemplate jdbcTemplate(DataSource dataSource) { // it depends on a dataSource
+    return new JdbcTemplate(dataSource);
+  }
+}
+```
+
 ### Tenant Discoverer
 
 Snippet code to get all tenants by a particular prefix
@@ -46,6 +58,9 @@ Snippet code to get all tenants by a particular prefix
 ```Java
  @Value("${tenant.prefix}")
  private String tenantPrefix;
+ 
+ @Autowired
+ private TenantDiscoverer tenantDiscoverer;
     
  Optional<List<Tenant>> tenants = tenantDiscoverer.getTenants(tenantPrefix);
 ```
