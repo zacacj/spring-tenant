@@ -23,17 +23,17 @@ public class TenantDiscoverer {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public Optional<List<Tenant>> getTenants(String withPrefix) {
-        TenantContextHolder.set(new Tenant(defaultTenant));
+    public Optional<List<String>> getTenants(String withPrefix) {
+        TenantContextHolder.setRootTenant(defaultTenant);
         String sql = queryGetTenants.replaceAll(":prefix", withPrefix);
         return Optional.ofNullable(jdbcTemplate.query(sql, (rs, rowNum) -> new TenantRowMapper().mapRow(rs, rowNum)));
     }
 
-    public static class TenantRowMapper implements RowMapper<Tenant> {
+    public static class TenantRowMapper implements RowMapper<String> {
 
         @Override
-        public Tenant mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Tenant(rs.getString(1));
+        public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return rs.getString(1);
         }
     }
 }

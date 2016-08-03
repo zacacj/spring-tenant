@@ -1,29 +1,59 @@
 package br.com.zup.spring.tenant;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class TenantContextHolder {
 
-    private static final Logger LOG = LogManager.getLogger(TenantContextHolder.class.getName());
+    private static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
+    private static final String ROOT_SLUG = "root_slug_";
 
-    private static final ThreadLocal<Tenant> threadLocal = new ThreadLocal<>();
+    private static TenantExtractor tenantExtractor;
 
-    public static void set(Tenant tenant) {
-        LOG.debug("Tenant:" + tenant + "Thread: " + Thread.currentThread().getName());
-        threadLocal.set(tenant);
+    public static void setRootTenant(String tenant) {
+        threadLocal.set(ROOT_SLUG + tenant);
+    }
+
+    private static String rootTenant() {
+        return slug().replace(ROOT_SLUG, "");
+    }
+
+    public static boolean isRootTenant() {
+        return slug().startsWith(ROOT_SLUG);
+    }
+
+    public static void set(String slug) {
+        if (slug.startsWith(ROOT_SLUG)) {
+            throw new IllegalArgumentException("Slug doesn't start with " + ROOT_SLUG);
+        }
+        threadLocal.set(slug);
     }
 
     public static void unset() {
         threadLocal.remove();
     }
 
-    public static Tenant get() {
+    public static String tenant() {
+        if (isRootTenant()) {
+            return rootTenant();
+        }
+        checkTenantExtractor();
+        return tenantExtractor.extractFrom(slug());
+    }
+
+    public static String slug() {
         return threadLocal.get();
     }
 
-    public static ThreadLocal<Tenant> getThreadLocal() {
+    public static ThreadLocal<String> getThreadLocal() {
         return threadLocal;
+    }
+
+    public static void setTenantExtractor(TenantExtractor extractor) {
+        tenantExtractor = extractor;
+    }
+
+    private static void checkTenantExtractor() {
+        if (tenantExtractor == null) {
+            throw new TenantExtractor.TenantExtractorNotFoundException("TenantExtractor implementation have to be provided.");
+        }
     }
 }

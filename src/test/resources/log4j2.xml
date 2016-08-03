@@ -15,6 +15,9 @@
         <Logger name="org.springframework" level="TRACE" additivity="false">
             <AppenderRef ref="Async"/>
         </Logger>
+        <Logger name="org.springframework.jdbc.core" level="TRACE" additivity="false">
+            <AppenderRef ref="Async"/>
+        </Logger>
         <Root level="TRACE">
             <AppenderRef ref="Async"/>
         </Root>
