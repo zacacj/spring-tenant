@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 public class TenantContextHolder {
 
-    private static final Logger LOG = LogManager.getLogger(TenantConnectionPrepareAspect.class.getName());
+    private static final Logger LOG = LogManager.getLogger(TenantContextHolder.class.getName());
 
 
     private static final ThreadLocal<Tenant> threadLocal = new ThreadLocal<>();
@@ -23,4 +23,7 @@ public class TenantContextHolder {
         return threadLocal.get();
     }
 
+    public static ThreadLocal<Tenant> getThreadLocal() {
+        return threadLocal;
+    }
 }
