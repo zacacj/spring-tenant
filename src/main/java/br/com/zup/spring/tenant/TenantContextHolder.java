@@ -21,7 +21,7 @@ public class TenantContextHolder {
     }
 
     public static void set(String slug) {
-        if (isRootTenant()) {
+        if (slug.startsWith(ROOT_SLUG)) {
             throw new IllegalArgumentException("Slug doesn't start with " + ROOT_SLUG);
         }
         threadLocal.set(slug);
