@@ -24,7 +24,7 @@ public class TenantDiscoverer {
     private JdbcTemplate jdbcTemplate;
 
     public Optional<List<String>> getTenants(String withPrefix) {
-        TenantContextHolder.setRootTenant(defaultTenant);
+        TenantContextHolder.set(defaultTenant);
         String sql = queryGetTenants.replaceAll(":prefix", withPrefix);
         return Optional.ofNullable(jdbcTemplate.query(sql, (rs, rowNum) -> new TenantRowMapper().mapRow(rs, rowNum)));
     }

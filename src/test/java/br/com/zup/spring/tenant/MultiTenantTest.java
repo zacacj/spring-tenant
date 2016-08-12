@@ -1,7 +1,6 @@
 package br.com.zup.spring.tenant;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.ParallelComputer;
 import org.junit.runner.JUnitCore;
@@ -30,11 +29,6 @@ public class MultiTenantTest {
         MultiTenantTest.jdbcTemplate = jdbcTemplate;
     }
 
-    @Before
-    public void before() {
-        TenantContextHolder.setTenantExtractor(slug -> "tenant_".concat(slug));
-    }
-
     @Test
     public void runTests() throws InterruptedException {
         Class[] cls = {ParallelTest.class};
@@ -49,8 +43,7 @@ public class MultiTenantTest {
 
         @Test
         public void testGetUserOfTenant1ShouldReturnUserTenant1AndZupSlug() {
-            TenantContextHolder.set("zup");
-            Assert.assertEquals("tenant_zup", TenantContextHolder.tenant());
+            TenantContextHolder.set("tenant_zup");
             Optional<List<User>> users = Optional.ofNullable(jdbcTemplate.query("select name from users", (rs, rowNum) -> new UserRowMapper().mapRow(rs, rowNum)));
             Assert.assertTrue(users.isPresent());
             Assert.assertEquals(1, users.get().size());
@@ -60,8 +53,7 @@ public class MultiTenantTest {
 
         @Test
         public void testGetUserOfTenant2ShouldReturnUserTenant2AndZuppSlug() {
-            TenantContextHolder.set("zupp");
-            Assert.assertEquals("tenant_zupp", TenantContextHolder.tenant());
+            TenantContextHolder.set("tenant_zupp");
             Optional<List<User>> users = Optional.ofNullable(jdbcTemplate.query("select name from users", (rs, rowNum) -> new UserRowMapper().mapRow(rs, rowNum)));
             Assert.assertTrue(users.isPresent());
             Assert.assertEquals(1, users.get().size());

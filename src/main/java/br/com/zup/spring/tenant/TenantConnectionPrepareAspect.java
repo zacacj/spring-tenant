@@ -30,17 +30,17 @@ public class TenantConnectionPrepareAspect {
             return prepare(connection);
 
         } catch (Throwable throwable) {
-            LOG.error("Error to prepare tenant connection for slug {}.", TenantContextHolder.slug(), throwable);
+            LOG.error("Error to prepare tenant connection for slug {}.", TenantContextHolder.get(), throwable);
             throw new RuntimeException(throwable);
         }
     }
 
     private Connection prepare(Connection connection) throws SQLException {
 
-        LOG.debug("Preparing connection for tenant {}...", TenantContextHolder.tenant());
+        LOG.debug("Preparing connection for tenant {}...", TenantContextHolder.get());
         Optional<Statement> statementOptional = Optional.empty();
         try {
-            String sql = queryChangeTenant.replaceAll(":tenant", TenantContextHolder.tenant());
+            String sql = queryChangeTenant.replaceAll(":tenant", TenantContextHolder.get());
             statementOptional = Optional.ofNullable(connection.createStatement());
             if (statementOptional.isPresent()) {
                 statementOptional.get().execute(sql);
