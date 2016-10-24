@@ -18,7 +18,6 @@ public class TenantDiscovererTest {
     @Autowired
     private TenantDiscoverer tenantDiscoverer;
 
-
     @Test
     public void testGetTenantsWithPrefixShouldReturnListOfTenants() {
         Optional<List<String>> tenants = tenantDiscoverer.getTenants("TENANT");
