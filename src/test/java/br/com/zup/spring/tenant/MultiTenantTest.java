@@ -24,9 +24,12 @@ public class MultiTenantTest {
 
     private static JdbcTemplate jdbcTemplate;
 
+    private static TenantBuilder tenantBuilder;
+
     @Autowired
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate, TenantBuilder tenantBuilder) {
         MultiTenantTest.jdbcTemplate = jdbcTemplate;
+        MultiTenantTest.tenantBuilder = tenantBuilder;
     }
 
     @Test
@@ -43,7 +46,7 @@ public class MultiTenantTest {
 
         @Test
         public void testGetUserOfTenant1ShouldReturnUserTenant1AndZupSlug() {
-            TenantContextHolder.set("tenant_zup");
+            tenantBuilder.set("tenant_zup");
             Optional<List<User>> users = Optional.ofNullable(jdbcTemplate.query("select name from users", (rs, rowNum) -> new UserRowMapper().mapRow(rs, rowNum)));
             Assert.assertTrue(users.isPresent());
             Assert.assertEquals(1, users.get().size());
@@ -53,7 +56,7 @@ public class MultiTenantTest {
 
         @Test
         public void testGetUserOfTenant2ShouldReturnUserTenant2AndZuppSlug() {
-            TenantContextHolder.set("tenant_zupp");
+            tenantBuilder.set("tenant_zupp");
             Optional<List<User>> users = Optional.ofNullable(jdbcTemplate.query("select name from users", (rs, rowNum) -> new UserRowMapper().mapRow(rs, rowNum)));
             Assert.assertTrue(users.isPresent());
             Assert.assertEquals(1, users.get().size());

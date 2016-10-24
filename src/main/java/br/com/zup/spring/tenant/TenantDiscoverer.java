@@ -23,8 +23,11 @@ public class TenantDiscoverer {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private TenantBuilder tenantBuilder;
+
     public Optional<List<String>> getTenants(String withPrefix) {
-        TenantContextHolder.set(defaultTenant);
+        tenantBuilder.set(defaultTenant);
         String sql = queryGetTenants.replaceAll(":prefix", withPrefix);
         return Optional.ofNullable(jdbcTemplate.query(sql, (rs, rowNum) -> new TenantRowMapper().mapRow(rs, rowNum)));
     }
