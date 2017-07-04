@@ -9,9 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Optional;
 
 @Component
 @Aspect
@@ -28,7 +27,6 @@ public class TenantConnectionPrepareAspect {
         try {
             Connection connection = (Connection) proceedingJoinPoint.proceed();
             return prepare(connection);
-
         } catch (Throwable throwable) {
             LOG.error("Error to prepare tenant connection for slug {}.", TenantContextHolder.get(), throwable);
             throw new RuntimeException(throwable);
@@ -36,19 +34,10 @@ public class TenantConnectionPrepareAspect {
     }
 
     private Connection prepare(Connection connection) throws SQLException {
-
         LOG.debug("Preparing connection for tenant {}...", TenantContextHolder.get());
-        Optional<Statement> statementOptional = Optional.empty();
-        try {
-            String sql = queryChangeTenant.replaceAll(":tenant", TenantContextHolder.get());
-            statementOptional = Optional.ofNullable(connection.createStatement());
-            if (statementOptional.isPresent()) {
-                statementOptional.get().execute(sql);
-            }
-        } finally {
-            if (statementOptional.isPresent()) {
-                statementOptional.get().close();
-            }
+        try (PreparedStatement pst = connection.prepareStatement(queryChangeTenant)) {
+            pst.setString(1, TenantContextHolder.get());
+            pst.executeUpdate();
         }
         return connection;
     }

@@ -33,7 +33,6 @@ public class MultiTenantTest {
     public void runTests() throws InterruptedException {
         Class[] cls = {ParallelTest.class};
         JUnitCore.runClasses(new ParallelComputer(true, true), cls);
-
         Assert.assertTrue(ParallelTest.latch.await(2, TimeUnit.SECONDS));
     }
 
@@ -42,8 +41,8 @@ public class MultiTenantTest {
         static final CountDownLatch latch = new CountDownLatch(2);
 
         @Test
-        public void testGetUserOfTenant1ShouldReturnUserTenant1AndZupSlug() {
-            TenantContextHolder.set("tenant_zup");
+        public void shouldReturnUserTenant1AndZupSlug() {
+            TenantContextHolder.set("TENANT_ZUP");
             Optional<List<User>> users = Optional.ofNullable(jdbcTemplate.query("select name from users", (rs, rowNum) -> new UserRowMapper().mapRow(rs, rowNum)));
             Assert.assertTrue(users.isPresent());
             Assert.assertEquals(1, users.get().size());
@@ -52,8 +51,8 @@ public class MultiTenantTest {
         }
 
         @Test
-        public void testGetUserOfTenant2ShouldReturnUserTenant2AndZuppSlug() {
-            TenantContextHolder.set("tenant_zupp");
+        public void shouldReturnUserTenant2AndZuppSlug() {
+            TenantContextHolder.set("TENANT_ZUPP");
             Optional<List<User>> users = Optional.ofNullable(jdbcTemplate.query("select name from users", (rs, rowNum) -> new UserRowMapper().mapRow(rs, rowNum)));
             Assert.assertTrue(users.isPresent());
             Assert.assertEquals(1, users.get().size());

@@ -20,7 +20,7 @@ public class TenantDiscovererTest {
 
 
     @Test
-    public void testGetTenantsWithPrefixShouldReturnListOfTenants() {
+    public void shouldReturnListOfTenants() {
         Optional<List<String>> tenants = tenantDiscoverer.getTenants("TENANT");
         Assert.assertTrue(tenants.isPresent());
         Assert.assertEquals(2, tenants.get().size());
