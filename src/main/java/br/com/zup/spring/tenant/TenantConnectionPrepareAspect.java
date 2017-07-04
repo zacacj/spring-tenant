@@ -18,8 +18,12 @@ public class TenantConnectionPrepareAspect {
 
     private static final Logger LOG = LoggerFactory.getLogger(TenantConnectionPrepareAspect.class);
 
-    @Value("${tenant.query.changeTenant}")
-    private String queryChangeTenant;
+
+    private final String queryChangeTenant;
+
+    public TenantConnectionPrepareAspect(@Value("${tenant.query.changeTenant}") String queryChangeTenant) {
+        this.queryChangeTenant = queryChangeTenant;
+    }
 
     @Around("execution(java.sql.Connection javax.sql.DataSource.getConnection())")
     public Object prepareConnection(ProceedingJoinPoint proceedingJoinPoint) {
