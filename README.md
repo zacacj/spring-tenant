@@ -51,6 +51,21 @@ public class YourAppConfig {
 }
 ```
 
+### Spring Boot Profile
+Set the database profile via java args:
+
+postgresql:
+
+```
+-Dspring.profiles.active=postgresql
+```
+
+oracle:
+
+```
+-Dspring.profiles.active=oracle
+```
+
 ### Tenant Discoverer
 
 Snippet code to get all tenants by a particular prefix
