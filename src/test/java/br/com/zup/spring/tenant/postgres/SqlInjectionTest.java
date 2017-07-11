@@ -1,5 +1,7 @@
-package br.com.zup.spring.tenant;
+package br.com.zup.spring.tenant.postgres;
 
+import br.com.zup.spring.tenant.TenantConfig;
+import br.com.zup.spring.tenant.TenantContextHolder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +14,7 @@ import java.sql.SQLException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ConfigurationTest.class, TenantConfig.class})
-public class SqlInjectionTest {
+public class SqlInjectionTest extends AbstractTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -21,7 +23,7 @@ public class SqlInjectionTest {
     @Test
     public void shouldThrowSQLException() {
         try {
-            TenantContextHolder.set("TENANT_ZUP; delete from TENANT_ZUP.users;");
+            TenantContextHolder.set("tenant_zup; delete from users;");
             jdbcTemplate.query("select * from users", (rs, i) -> rs.getString(1));
         } catch (RuntimeException e) {
             Assert.assertTrue(e.getCause() instanceof SQLException);

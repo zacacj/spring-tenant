@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.regex.Pattern;
 
 @Component
 @Aspect
@@ -18,6 +19,7 @@ public class TenantConnectionPrepareAspect {
 
     private static final Logger LOG = LoggerFactory.getLogger(TenantConnectionPrepareAspect.class);
 
+    private static final Pattern validValue = Pattern.compile("^[a-zA-Z][a-zA-Z0-9-_]*(,[a-zA-Z][a-zA-Z0-9-_]*)*$");
 
     private final String queryChangeTenant;
 
@@ -32,17 +34,23 @@ public class TenantConnectionPrepareAspect {
             Connection connection = (Connection) proceedingJoinPoint.proceed();
             return prepare(connection);
         } catch (Throwable throwable) {
-            LOG.error("Error to prepare tenant connection for slug {}.", TenantContextHolder.get(), throwable);
+            LOG.error("Error to prepare connection for tenant {}.", TenantContextHolder.get(), throwable);
             throw new RuntimeException(throwable);
         }
     }
 
     private Connection prepare(Connection connection) throws SQLException {
         LOG.debug("Preparing connection for tenant {}...", TenantContextHolder.get());
-        try (PreparedStatement pst = connection.prepareStatement(queryChangeTenant)) {
-            pst.setString(1, TenantContextHolder.get());
+        String sql = queryChangeTenant.replace(":tenant", escapeValue(TenantContextHolder.get()));
+        try (PreparedStatement pst = connection.prepareStatement(sql)) {
             pst.executeUpdate();
         }
         return connection;
+    }
+
+    private String escapeValue(String value) throws SQLException {
+        if (!validValue.matcher(value).matches())
+            throw new SQLException("Invalid query parameter value: " + value);
+        return value;
     }
 }

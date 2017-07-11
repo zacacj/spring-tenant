@@ -1,5 +1,7 @@
-package br.com.zup.spring.tenant;
+package br.com.zup.spring.tenant.postgres;
 
+import br.com.zup.spring.tenant.TenantConfig;
+import br.com.zup.spring.tenant.TenantContextHolder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.ParallelComputer;
@@ -20,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ConfigurationTest.class, TenantConfig.class})
-public class MultiTenantTest {
+public class MultiTenantTest extends AbstractTest {
 
     private static JdbcTemplate jdbcTemplate;
 
@@ -42,7 +44,7 @@ public class MultiTenantTest {
 
         @Test
         public void shouldReturnUserTenant1AndZupSlug() {
-            TenantContextHolder.set("TENANT_ZUP");
+            TenantContextHolder.set("tenant_zup");
             Optional<List<User>> users = Optional.ofNullable(jdbcTemplate.query("select name from users", (rs, rowNum) -> new UserRowMapper().mapRow(rs, rowNum)));
             Assert.assertTrue(users.isPresent());
             Assert.assertEquals(1, users.get().size());
@@ -52,7 +54,7 @@ public class MultiTenantTest {
 
         @Test
         public void shouldReturnUserTenant2AndZuppSlug() {
-            TenantContextHolder.set("TENANT_ZUPP");
+            TenantContextHolder.set("tenant_zupp");
             Optional<List<User>> users = Optional.ofNullable(jdbcTemplate.query("select name from users", (rs, rowNum) -> new UserRowMapper().mapRow(rs, rowNum)));
             Assert.assertTrue(users.isPresent());
             Assert.assertEquals(1, users.get().size());
