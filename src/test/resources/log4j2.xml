@@ -18,7 +18,10 @@
         <Logger name="org.springframework.jdbc.core" level="TRACE" additivity="false">
             <AppenderRef ref="Async"/>
         </Logger>
-        <Root level="TRACE">
+        <Logger name="org.hsqldb" level="TRACE" additivity="false">
+            <AppenderRef ref="Async"/>
+        </Logger>
+        <Root level="TRACE" additivity="false">
             <AppenderRef ref="Async"/>
         </Root>
     </Loggers>

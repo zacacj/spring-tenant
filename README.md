@@ -13,7 +13,7 @@
 <dependency>
   <groupId>br.com.zup</groupId>
   <artifactId>spring-tenant</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>VERSION</version>
 </dependency>
 ```
 
@@ -51,6 +51,21 @@ public class YourAppConfig {
 }
 ```
 
+### Spring Boot Profile
+Set the database profile via java args:
+
+postgresql:
+
+```
+-Dspring.profiles.active=postgresql
+```
+
+oracle:
+
+```
+-Dspring.profiles.active=oracle
+```
+
 ### Tenant Discoverer
 
 Snippet code to get all tenants by a particular prefix
@@ -72,7 +87,7 @@ By default this component is already configured.
 
 ### Set tenant in your current context
 ```Java
-  Tenant tenant = getTenant();// get tenant from request (e.g. Header) or database (e.g. TenantDiscoverer)
+  String tenant = getTenant();// get tenant from request (e.g. Header) or database (e.g. TenantDiscoverer)
   TenantContextHolder.set(tenant);
   // run some code to access your database...
   // all database operations are run in your tenant session also prepared by component TenantConnectionPrepareAspect.
@@ -80,5 +95,4 @@ By default this component is already configured.
 
 ### Next features
 
-* Define a automatic way to provide tenant in the context for web applications
 * Support more database (e.g. MySQL, SQLServer, DB2, Sybase, Firebird, etc)

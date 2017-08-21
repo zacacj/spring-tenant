@@ -1,6 +1,8 @@
-package br.com.zup.spring.tenant;
+package br.com.zup.spring.tenant.postgres;
 
 
+import br.com.zup.spring.tenant.TenantConfig;
+import br.com.zup.spring.tenant.TenantDiscoverer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,15 +15,14 @@ import java.util.Optional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ConfigurationTest.class, TenantConfig.class})
-public class TenantDiscovererTest {
+public class TenantDiscovererTest extends AbstractTest {
 
     @Autowired
     private TenantDiscoverer tenantDiscoverer;
 
-
     @Test
-    public void testGetTenantsWithPrefixShouldReturnListOfTenants() {
-        Optional<List<String>> tenants = tenantDiscoverer.getTenants("TENANT");
+    public void shouldReturnListOfTenants() {
+        Optional<List<String>> tenants = tenantDiscoverer.getTenants("tenant");
         Assert.assertTrue(tenants.isPresent());
         Assert.assertEquals(2, tenants.get().size());
     }

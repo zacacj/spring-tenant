@@ -1,6 +1,5 @@
 package br.com.zup.spring.tenant;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,19 +13,23 @@ import java.util.Optional;
 @Component
 public class TenantDiscoverer {
 
-    @Value("${tenant.query.getTenants}")
-    private String queryGetTenants;
+    private final String queryGetTenants;
+    private final String defaultTenant;
+    private final JdbcTemplate jdbcTemplate;
 
-    @Value("${tenant.default}")
-    private String defaultTenant;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public TenantDiscoverer(@Value("${tenant.query.getTenants}") String queryGetTenants,
+                            @Value("${tenant.default}") String defaultTenant,
+                            JdbcTemplate jdbcTemplate) {
+        this.queryGetTenants = queryGetTenants;
+        this.defaultTenant = defaultTenant;
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public Optional<List<String>> getTenants(String withPrefix) {
         TenantContextHolder.set(defaultTenant);
-        String sql = queryGetTenants.replaceAll(":prefix", withPrefix);
-        return Optional.ofNullable(jdbcTemplate.query(sql, (rs, rowNum) -> new TenantRowMapper().mapRow(rs, rowNum)));
+        String prefixParam = withPrefix + "%";
+        Object[] params = {prefixParam};
+        return Optional.ofNullable(jdbcTemplate.query(queryGetTenants, params, (rs, rowNum) -> new TenantRowMapper().mapRow(rs, rowNum)));
     }
 
     public static class TenantRowMapper implements RowMapper<String> {

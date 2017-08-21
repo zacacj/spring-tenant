@@ -4,7 +4,7 @@
 
     <groupId>br.com.zup</groupId>
     <artifactId>spring-tenant</artifactId>
-    <version>0.1.0</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>spring-tenant</name>
@@ -13,8 +13,8 @@
     <properties>
         <project.build.encoding>utf-8</project.build.encoding>
         <project.build.java>1.8</project.build.java>
-        <hsqldb.version>2.3.4</hsqldb.version>
-        <spring.version>4.2.6.RELEASE</spring.version>
+        <hsqldb.version>2.4.0</hsqldb.version>
+        <spring.version>4.3.8.RELEASE</spring.version>
         <log4j2.version>2.5</log4j2.version>
     </properties>
 
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.21</version>
+            <version>1.7.25</version>
         </dependency>
 
         <dependency>
@@ -85,34 +85,25 @@
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.6.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.6.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.6.2</version>
+            <groupId>com.opentable.components</groupId>
+            <artifactId>otj-pg-embedded</artifactId>
+            <version>0.8.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -126,6 +117,15 @@
                     <source>${project.build.java}</source>
                     <target>${project.build.java}</target>
                     <encoding>${project.build.encoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/PostgresSuite.class</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>
