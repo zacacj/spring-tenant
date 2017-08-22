@@ -27,7 +27,7 @@ public class TenantConnectionPrepareAspect {
         this.queryChangeTenant = queryChangeTenant;
     }
 
-    @Around("execution(java.sql.Connection javax.sql.DataSource.getConnection())")
+    @Around("execution(java.sql.Connection javax.sql.DataSource.getConnection(..))")
     public Object prepareConnection(ProceedingJoinPoint proceedingJoinPoint) {
 
         try {
